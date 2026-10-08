@@ -1,3 +1,5 @@
 .env
 scratch/finnhub-responses/
 scratch/*
+.neon
+node_modules/
