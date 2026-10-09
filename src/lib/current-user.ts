@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { prisma } from "@/db";
 import { SESSION_COOKIE_NAME, hashSessionToken, isSessionExpired } from "@/lib/session";
 
@@ -18,4 +19,13 @@ export async function getCurrentUser(): Promise<{ id: string; email: string } | 
   }
 
   return { id: session.user.id, email: session.user.email };
+}
+
+/** Server-side gate for protected routes/endpoints: returns the user or redirects to /login. */
+export async function requireUser(): Promise<{ id: string; email: string }> {
+  const user = await getCurrentUser();
+  if (!user) {
+    redirect("/login");
+  }
+  return user;
 }

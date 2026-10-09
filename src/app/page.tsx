@@ -13,6 +13,9 @@ export default async function Home() {
         <p>
           Signed in as <strong>{user.email}</strong>
         </p>
+        <p>
+          <Link href="/lookup">Look up a stock</Link>
+        </p>
         <form action={logout}>
           <button type="submit">Log out</button>
         </form>
