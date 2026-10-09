@@ -1,4 +1,5 @@
 .env
+.env.test
 scratch/finnhub-responses/
 scratch/*
 .neon
