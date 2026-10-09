@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/current-user";
 import { Brand } from "@/components/brand";
-import LoginForm from "./login-form";
+import { AuthCard } from "@/components/auth-card";
 
 export const metadata: Metadata = {
   title: "Log in · Stock Search",
@@ -23,7 +23,7 @@ export default async function LoginPage() {
         </div>
       </header>
       <main className="app__main auth">
-        <LoginForm />
+        <AuthCard initialMode="login" />
       </main>
     </div>
   );

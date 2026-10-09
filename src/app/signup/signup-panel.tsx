@@ -1,21 +1,41 @@
 "use client";
 
-import Link from "next/link";
 import { useActionState } from "react";
-import { login, type LoginState } from "./actions";
+import { signup, type SignupState } from "./actions";
 import { PasswordField } from "@/components/password-field";
 import { ErrorIcon, Spinner } from "@/components/icons";
 
-const initialState: LoginState = {};
+const initialState: SignupState = {};
 
-export default function LoginForm() {
-  const [state, formAction, isPending] = useActionState(login, initialState);
+export default function SignupPanel({ onCreated }: { onCreated?: () => void }) {
+  const [state, formAction, isPending] = useActionState(signup, initialState);
+
+  if (state.success) {
+    return (
+      <div className="auth-panel" role="tabpanel" id="panel-signup" aria-labelledby="tab-signup">
+        <div className="auth-card__head">
+          <h1 className="title">Account created</h1>
+          <p className="subtitle">You can now log in.</p>
+        </div>
+        <button type="button" className="btn btn--primary btn--block" onClick={onCreated}>
+          Log in
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <form className="card auth-card" action={formAction} noValidate>
+    <form
+      className="auth-panel"
+      action={formAction}
+      noValidate
+      role="tabpanel"
+      id="panel-signup"
+      aria-labelledby="tab-signup"
+    >
       <div className="auth-card__head">
-        <h1 className="title">Welcome back</h1>
-        <p className="subtitle">Log in to look up prices.</p>
+        <h1 className="title">Create your account</h1>
+        <p className="subtitle">It takes a few seconds.</p>
       </div>
 
       {state.error && (
@@ -46,18 +66,18 @@ export default function LoginForm() {
           id="pw"
           name="password"
           label="Password"
-          autoComplete="current-password"
+          autoComplete="new-password"
+          minLength={8}
           disabled={isPending}
+          helpId="pwhelp"
+          helpText="At least 8 characters."
         />
       </div>
 
       <button className="btn btn--primary btn--block" type="submit" disabled={isPending} aria-busy={isPending}>
         {isPending && <Spinner />}
-        {isPending ? "Logging in…" : "Log in"}
+        {isPending ? "Creating account…" : "Create account"}
       </button>
-      <div className="auth-card__foot">
-        New here? <Link className="link" href="/signup">Create an account</Link>
-      </div>
     </form>
   );
 }

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/current-user";
 import { Brand } from "@/components/brand";
-import SignupForm from "./signup-form";
+import { AuthCard } from "@/components/auth-card";
 
 export const metadata: Metadata = {
   title: "Create account · Stock Search",
@@ -23,7 +23,7 @@ export default async function SignupPage() {
         </div>
       </header>
       <main className="app__main auth">
-        <SignupForm />
+        <AuthCard initialMode="signup" />
       </main>
     </div>
   );

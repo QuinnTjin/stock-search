@@ -187,10 +187,26 @@ a { text-underline-offset: 3px; }
 }
 .auth-card__head { display: flex; flex-direction: column; gap: 6px; }
 .auth-card__fields { display: flex; flex-direction: column; gap: 20px; }
-.auth-card__foot {
-  padding-top: 20px; border-top: 1px solid var(--color-hairline);
-  font-size: 14px; line-height: 20px; color: var(--color-muted); text-align: center;
+
+/* Log in / Sign up switcher, shared by one auth-card so neither form has to be hunted for */
+.auth-tabs {
+  display: flex; gap: 4px;
+  padding: 4px;
+  background: var(--color-raised); border-radius: var(--radius-control);
 }
+.auth-tabs__tab {
+  flex: 1; height: 40px;
+  border: 1px solid transparent; border-radius: calc(var(--radius-control) - 4px);
+  background: transparent; color: var(--color-muted);
+  font: 600 14px var(--font-sans); cursor: pointer;
+  transition: background var(--motion-fast), color var(--motion-fast), border-color var(--motion-fast);
+}
+.auth-tabs__tab:hover { color: var(--color-text); }
+.auth-tabs__tab--active {
+  background: var(--color-surface); color: var(--color-text);
+  border-color: var(--color-hairline);
+}
+.auth-panel { display: flex; flex-direction: column; gap: var(--space-5); }
 
 /* ---------- Landing ---------- */
 .hero {

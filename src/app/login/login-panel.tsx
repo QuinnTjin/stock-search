@@ -1,35 +1,27 @@
 "use client";
 
-import Link from "next/link";
 import { useActionState } from "react";
-import { signup, type SignupState } from "./actions";
+import { login, type LoginState } from "./actions";
 import { PasswordField } from "@/components/password-field";
 import { ErrorIcon, Spinner } from "@/components/icons";
 
-const initialState: SignupState = {};
+const initialState: LoginState = {};
 
-export default function SignupForm() {
-  const [state, formAction, isPending] = useActionState(signup, initialState);
-
-  if (state.success) {
-    return (
-      <div className="card auth-card">
-        <div className="auth-card__head">
-          <h1 className="title">Account created</h1>
-          <p className="subtitle">You can now log in.</p>
-        </div>
-        <Link className="btn btn--primary btn--block" href="/login">
-          Log in
-        </Link>
-      </div>
-    );
-  }
+export default function LoginPanel() {
+  const [state, formAction, isPending] = useActionState(login, initialState);
 
   return (
-    <form className="card auth-card" action={formAction} noValidate>
+    <form
+      className="auth-panel"
+      action={formAction}
+      noValidate
+      role="tabpanel"
+      id="panel-login"
+      aria-labelledby="tab-login"
+    >
       <div className="auth-card__head">
-        <h1 className="title">Create your account</h1>
-        <p className="subtitle">It takes a few seconds.</p>
+        <h1 className="title">Welcome back</h1>
+        <p className="subtitle">Log in to look up prices.</p>
       </div>
 
       {state.error && (
@@ -60,21 +52,15 @@ export default function SignupForm() {
           id="pw"
           name="password"
           label="Password"
-          autoComplete="new-password"
-          minLength={8}
+          autoComplete="current-password"
           disabled={isPending}
-          helpId="pwhelp"
-          helpText="At least 8 characters."
         />
       </div>
 
       <button className="btn btn--primary btn--block" type="submit" disabled={isPending} aria-busy={isPending}>
         {isPending && <Spinner />}
-        {isPending ? "Creating account…" : "Create account"}
+        {isPending ? "Logging in…" : "Log in"}
       </button>
-      <div className="auth-card__foot">
-        Already have an account? <Link className="link" href="/login">Log in</Link>
-      </div>
     </form>
   );
 }
