@@ -5,7 +5,27 @@ import {
   generateSessionToken,
   hashSessionToken,
   sessionCookieOptions,
+  isSessionExpired,
 } from "./session";
+
+describe("isSessionExpired", () => {
+  it("is expired when expiresAt is in the past", () => {
+    const now = new Date("2026-01-01T00:00:00Z");
+    const expiresAt = new Date("2025-12-31T00:00:00Z");
+    expect(isSessionExpired(expiresAt, now)).toBe(true);
+  });
+
+  it("is live when expiresAt is in the future", () => {
+    const now = new Date("2026-01-01T00:00:00Z");
+    const expiresAt = new Date("2026-01-02T00:00:00Z");
+    expect(isSessionExpired(expiresAt, now)).toBe(false);
+  });
+
+  it("treats exact-now as expired", () => {
+    const now = new Date("2026-01-01T00:00:00Z");
+    expect(isSessionExpired(now, now)).toBe(true);
+  });
+});
 
 describe("generateSessionToken", () => {
   it("returns distinct, high-entropy values", () => {

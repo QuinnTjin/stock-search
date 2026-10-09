@@ -22,3 +22,7 @@ export function sessionCookieOptions() {
     secure: process.env.NODE_ENV === "production",
   };
 }
+
+export function isSessionExpired(expiresAt: Date, now: Date = new Date()): boolean {
+  return expiresAt.getTime() <= now.getTime();
+}
