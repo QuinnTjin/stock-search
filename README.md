@@ -31,8 +31,12 @@ an external market-data provider.
   `/quote` endpoint, and returns the opening price and the date it applies
   to — or a friendly error message (invalid symbol, not found, rate limited,
   timed out, or upstream unavailable).
-- Looking up a price requires an active session — there's no anonymous
-  lookup path.
+- Every lookup is recorded. The signed-in user can visit `/history` to see
+  their recent searches, newest first, with the outcome (found / not found /
+  error), the open price when found, and when it happened. Clicking an entry
+  pre-fills that symbol back on `/lookup` to repeat it.
+- Looking up a price and viewing history both require an active session —
+  there's no anonymous access to either.
 
 ## Tech stack
 
@@ -138,7 +142,8 @@ src/
     login/           # Login page, form, and server action
     signup/          # Signup page, form, and server action
     logout/          # Logout server action
-    lookup/          # Stock lookup page, form, and server action
+    lookup/          # Stock lookup page, form, and server action (writes history)
+    history/         # Search history page (reads history)
   components/       # Shared UI (brand mark, icons, password field)
   lib/              # Pure/server helpers
     symbol.ts        # Ticker normalization + validation
@@ -147,6 +152,7 @@ src/
     session.ts        # Session token + cookie helpers
     current-user.ts   # Resolve the current user from the session cookie
     finnhub.ts         # Finnhub /quote client
+    history.ts         # Read + shape a user's recent lookups for /history
   test/             # Test-only guards (e.g. refuse to test against prod DB)
   db.ts             # PrismaClient singleton (Neon adapter)
   generated/prisma/ # Generated Prisma client (gitignored, do not edit)
@@ -169,7 +175,9 @@ See [`docs/data-model.md`](docs/data-model.md) for the full ER diagram. In short
   Designed to double as a cache (reuse the newest row for a symbol within a
   TTL) and to distinguish a real "not found" from an error.
 - **StockLookup** — one row per user search (history), pointing at the
-  `Quote` that answered it, or an error code if the call failed.
+  `Quote` that answered it, or an error code if the call failed. Written on
+  every lookup (best-effort — a write failure never blocks the lookup
+  result) and read back on `/history`.
 
 ## Testing
 
@@ -194,7 +202,11 @@ demo milestones; development is in progress toward an MVP. As of now:
 - ✅ Authenticated stock lookup against the live Finnhub `/quote` API, with
   symbol validation and error handling (invalid symbol, not found, rate
   limited, timed out, upstream unavailable)
-- ✅ `Quote` (cache/log) and `StockLookup` (history) tables exist in the schema
-- ⏳ The lookup flow does not yet write to `Quote` / `StockLookup` — every
-  lookup currently calls Finnhub directly, with no caching or persisted
-  search history yet
+- ✅ Every lookup writes a `Quote` + `StockLookup` row (history); `/history`
+  lists a signed-in user's recent searches newest-first and clicking one
+  pre-fills `/lookup` to repeat it
+- ⏳ Not yet built: TTL-based cache reuse (`Quote` is currently write-only —
+  every lookup calls Finnhub fresh, `servedFromCache` is always `false`);
+  the extra quote fields (current/high/low/previous close/change) are
+  fetched from Finnhub's response shape but not yet persisted or surfaced;
+  no pagination or deletion of history beyond a recent-20 limit

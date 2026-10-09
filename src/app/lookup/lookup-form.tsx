@@ -14,7 +14,11 @@ const formatPrice = new Intl.NumberFormat("en-US", {
   currency: "USD",
 });
 
-export default function LookupForm() {
+type LookupFormProps = {
+  initialSymbol?: string;
+};
+
+export default function LookupForm({ initialSymbol }: LookupFormProps) {
   const [state, formAction, isPending] = useActionState(lookupQuote, initialState);
   const [clientInvalid, setClientInvalid] = useState(false);
 
@@ -43,6 +47,7 @@ export default function LookupForm() {
             name="symbol"
             className="input input--ticker"
             type="text"
+            defaultValue={initialSymbol}
             autoCapitalize="characters"
             autoComplete="off"
             spellCheck={false}

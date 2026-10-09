@@ -1,5 +1,7 @@
 "use server";
 
+import { prisma } from "@/db";
+import { QuoteStatus } from "@/generated/prisma/client";
 import { requireUser } from "@/lib/current-user";
 import { fetchQuote } from "@/lib/finnhub";
 import { normalizeSymbol, isValidSymbol } from "@/lib/symbol";
@@ -15,7 +17,7 @@ const TIMEOUT_MESSAGE = "The price service timed out. Please try again.";
 const UNAVAILABLE_MESSAGE = "Couldn't reach the price service. Please try again.";
 
 export async function lookupQuote(_prev: LookupState, formData: FormData): Promise<LookupState> {
-  await requireUser();
+  const user = await requireUser();
 
   const symbol = normalizeSymbol(String(formData.get("symbol") ?? ""));
   if (!isValidSymbol(symbol)) {
@@ -23,6 +25,35 @@ export async function lookupQuote(_prev: LookupState, formData: FormData): Promi
   }
 
   const result = await fetchQuote(symbol);
+
+  // U6: history is best-effort — a DB hiccup must never take down a working lookup (U3).
+  try {
+    if (result.status === "FOUND") {
+      await prisma.stockLookup.create({
+        data: {
+          user: { connect: { id: user.id } },
+          symbol,
+          servedFromCache: false,
+          quote: { create: { symbol, status: QuoteStatus.FOUND, openPrice: result.open, quotedAt: result.quotedAt } },
+        },
+      });
+    } else if (result.status === "NOT_FOUND") {
+      await prisma.stockLookup.create({
+        data: {
+          user: { connect: { id: user.id } },
+          symbol,
+          servedFromCache: false,
+          quote: { create: { symbol, status: QuoteStatus.NOT_FOUND } },
+        },
+      });
+    } else {
+      await prisma.stockLookup.create({
+        data: { userId: user.id, symbol, servedFromCache: false, errorCode: result.code },
+      });
+    }
+  } catch (err) {
+    console.error("Failed to write stock lookup history:", err);
+  }
 
   switch (result.status) {
     case "FOUND":

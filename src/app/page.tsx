@@ -14,6 +14,9 @@ export default async function Home() {
           <div className="site-header__inner">
             <Brand href="/lookup" />
             <div className="site-header__actions">
+              <Link className="link" href="/history">
+                History
+              </Link>
               <span className="account">{user.email}</span>
               <form action={logout}>
                 <button className="btn btn--ghost btn--header" type="submit">

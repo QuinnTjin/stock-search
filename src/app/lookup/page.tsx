@@ -1,16 +1,24 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { requireUser } from "@/lib/current-user";
 import { logout } from "@/app/logout/actions";
 import { Brand } from "@/components/brand";
+import { normalizeSymbol } from "@/lib/symbol";
 import LookupForm from "./lookup-form";
 
 export const metadata: Metadata = {
   title: "Lookup · Stock Search",
 };
 
+type LookupPageProps = {
+  searchParams: Promise<{ symbol?: string }>;
+};
+
 // V2 Blocked from lookup: gated server-side. Unauthenticated visitors are redirected to /login.
-export default async function LookupPage() {
+export default async function LookupPage({ searchParams }: LookupPageProps) {
   const user = await requireUser();
+  const { symbol } = await searchParams;
+  const initialSymbol = symbol ? normalizeSymbol(symbol) : undefined;
 
   return (
     <div className="app">
@@ -18,6 +26,9 @@ export default async function LookupPage() {
         <div className="site-header__inner">
           <Brand href="/lookup" />
           <div className="site-header__actions">
+            <Link className="link" href="/history">
+              History
+            </Link>
             <span className="account">{user.email}</span>
             <form action={logout}>
               <button className="btn btn--ghost btn--header" type="submit">
@@ -33,7 +44,7 @@ export default async function LookupPage() {
             <h1 className="title">Stock lookup</h1>
             <p className="subtitle subtitle--lg">Enter a ticker. Get the open.</p>
           </div>
-          <LookupForm />
+          <LookupForm initialSymbol={initialSymbol} />
         </div>
       </main>
     </div>
