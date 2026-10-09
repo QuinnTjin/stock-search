@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import argon2 from "argon2";
-import { hashPassword } from "./password";
+import { hashPassword, verifyPassword } from "./password";
 
 describe("hashPassword", () => {
   it("produces an argon2id hash", async () => {
@@ -20,5 +20,21 @@ describe("hashPassword", () => {
     const hash = await hashPassword("correct-horse-battery-staple");
     expect(await argon2.verify(hash, "correct-horse-battery-staple")).toBe(true);
     expect(await argon2.verify(hash, "wrong-password")).toBe(false);
+  });
+});
+
+describe("verifyPassword", () => {
+  it("returns true for the correct password", async () => {
+    const hash = await hashPassword("correct-horse-battery-staple");
+    expect(await verifyPassword(hash, "correct-horse-battery-staple")).toBe(true);
+  });
+
+  it("returns false for the wrong password", async () => {
+    const hash = await hashPassword("correct-horse-battery-staple");
+    expect(await verifyPassword(hash, "wrong-password")).toBe(false);
+  });
+
+  it("returns false for a malformed hash instead of throwing", async () => {
+    await expect(verifyPassword("not-a-real-hash", "whatever")).resolves.toBe(false);
   });
 });
