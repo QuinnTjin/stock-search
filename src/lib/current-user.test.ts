@@ -20,12 +20,12 @@ function cookieJar(token: string | undefined) {
 
 const LIVE_SESSION = {
   expiresAt: new Date(Date.now() + 1000 * 60 * 60),
-  user: { id: "user-1", email: "alice@example.com" },
+  user: { id: "user-1", email: "alice@example.com", onboardedAt: null },
 };
 
 const EXPIRED_SESSION = {
   expiresAt: new Date(Date.now() - 1000 * 60 * 60),
-  user: { id: "user-1", email: "alice@example.com" },
+  user: { id: "user-1", email: "alice@example.com", onboardedAt: null },
 };
 
 beforeEach(() => {
@@ -46,7 +46,7 @@ describe("getCurrentUser", () => {
     cookiesMock.mockResolvedValue(cookieJar("raw-token"));
     findUniqueMock.mockResolvedValue(LIVE_SESSION);
 
-    expect(await getCurrentUser()).toEqual({ id: "user-1", email: "alice@example.com" });
+    expect(await getCurrentUser()).toEqual({ id: "user-1", email: "alice@example.com", onboardedAt: null });
   });
 
   it("returns null for an expired session", async () => {
@@ -84,7 +84,7 @@ describe("requireUser", () => {
     cookiesMock.mockResolvedValue(cookieJar("raw-token"));
     findUniqueMock.mockResolvedValue(LIVE_SESSION);
 
-    expect(await requireUser()).toEqual({ id: "user-1", email: "alice@example.com" });
+    expect(await requireUser()).toEqual({ id: "user-1", email: "alice@example.com", onboardedAt: null });
     expect(redirectMock).not.toHaveBeenCalled();
   });
 });

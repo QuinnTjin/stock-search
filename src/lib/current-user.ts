@@ -3,7 +3,9 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/db";
 import { SESSION_COOKIE_NAME, hashSessionToken, isSessionExpired } from "@/lib/session";
 
-export async function getCurrentUser(): Promise<{ id: string; email: string } | null> {
+export type CurrentUser = { id: string; email: string; onboardedAt: Date | null };
+
+export async function getCurrentUser(): Promise<CurrentUser | null> {
   const token = (await cookies()).get(SESSION_COOKIE_NAME)?.value;
   if (!token) {
     return null;
@@ -18,11 +20,11 @@ export async function getCurrentUser(): Promise<{ id: string; email: string } | 
     return null;
   }
 
-  return { id: session.user.id, email: session.user.email };
+  return { id: session.user.id, email: session.user.email, onboardedAt: session.user.onboardedAt };
 }
 
 /** Server-side gate for protected routes/endpoints: returns the user or redirects to /login. */
-export async function requireUser(): Promise<{ id: string; email: string }> {
+export async function requireUser(): Promise<CurrentUser> {
   const user = await getCurrentUser();
   if (!user) {
     redirect("/login");

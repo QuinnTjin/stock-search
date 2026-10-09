@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/current-user";
 import { logout } from "@/app/logout/actions";
 import { Brand } from "@/components/brand";
@@ -8,12 +9,20 @@ export default async function Home() {
   const user = await getCurrentUser();
 
   if (user) {
+    // F5: route first-time users through onboarding before anything else.
+    if (!user.onboardedAt) {
+      redirect("/onboarding");
+    }
+
     return (
       <div className="app">
         <header className="site-header">
           <div className="site-header__inner">
             <Brand href="/lookup" />
             <div className="site-header__actions">
+              <Link className="link" href="/dashboard">
+                Dashboard
+              </Link>
               <Link className="link" href="/history">
                 History
               </Link>

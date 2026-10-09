@@ -39,6 +39,9 @@ export default async function HistoryPage() {
         <div className="site-header__inner">
           <Brand href="/lookup" />
           <div className="site-header__actions">
+            <Link className="link" href="/dashboard">
+              Dashboard
+            </Link>
             <Link className="link" href="/history">
               History
             </Link>

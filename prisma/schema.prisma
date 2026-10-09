@@ -21,13 +21,33 @@ model User {
   email        String   @unique @db.Citext
   /// argon2id (or bcrypt) hash — never the plaintext password.
   passwordHash String   @map("password_hash")
+  /// Set when the user finishes or skips onboarding (F5). Null = not yet shown.
+  onboardedAt  DateTime? @map("onboarded_at") @db.Timestamptz(6)
   createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  sessions Session[]
-  lookups  StockLookup[]
+  sessions  Session[]
+  lookups   StockLookup[]
+  favorites Favorite[]
 
   @@map("users")
+}
+
+/// A stock a user saved to their dashboard (F1–F4). One row per user+symbol.
+model Favorite {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  /// Normalized symbol (trim + uppercase), same as lookups/quotes.
+  symbol    String   @db.VarChar(20)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // F3: saving the same symbol twice leaves one entry.
+  @@unique([userId, symbol])
+  // Dashboard read: a user's favorites, newest first.
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("favorites")
 }
 
 /// Server-side session. The cookie holds a random token; the DB stores only

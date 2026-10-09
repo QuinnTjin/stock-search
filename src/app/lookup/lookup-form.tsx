@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useActionState } from "react";
 import { lookupQuote, type LookupState } from "./actions";
@@ -99,6 +100,9 @@ export default function LookupForm({ initialSymbol }: LookupFormProps) {
               <span className="result-card__date">{state.asOf}</span>
             </div>
             <div className="result-card__source">Source: Finnhub</div>
+            <Link className="btn btn--secondary btn--block result-card__details" href={`/stock/${state.symbol}`}>
+              View details &amp; save →
+            </Link>
           </article>
         ) : state.status === "error" ? (
           <div role="alert" className="message message--error">

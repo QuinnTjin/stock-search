@@ -1,19 +1,27 @@
 # Data Model
 
-PostgreSQL (Neon) via Prisma. `quotes` is an append-only log of Finnhub `/quote` calls that doubles as the cache; `stock_lookups` is one row per user search, pointing at the quote that answered it.
+PostgreSQL (Neon) via Prisma. `quotes` is an append-only log of Finnhub `/quote` calls that doubles as the cache; `stock_lookups` is one row per user search, pointing at the quote that answered it. `favorites` is a user's saved stocks shown on their dashboard.
 
 ```mermaid
 erDiagram
     USER ||--o{ SESSION : "has"
     USER ||--o{ STOCK_LOOKUP : "performs"
+    USER ||--o{ FAVORITE : "saves"
     QUOTE |o--o{ STOCK_LOOKUP : "answers (null = ERROR)"
 
     USER {
         uuid id PK
         citext email UK
         string password_hash
+        timestamptz onboarded_at "null until F5 onboarding done"
         timestamptz created_at
         timestamptz updated_at
+    }
+    FAVORITE {
+        uuid id PK
+        uuid user_id FK
+        varchar symbol "UPPERCASE; unique per (user_id, symbol)"
+        timestamptz created_at
     }
     SESSION {
         varchar id PK "sha256(token)"
@@ -51,4 +59,7 @@ erDiagram
 
 - **User → Session** (1 to 0..N): cascade on delete.
 - **User → StockLookup** (1 to 0..N): cascade on delete.
+- **User → Favorite** (1 to 0..N): cascade on delete. `(user_id, symbol)` is unique, so saving the same symbol twice leaves one row (F3).
 - **Quote → StockLookup** (0..1 to 0..N): many lookups can share one cached quote; `quote_id` is null when the lookup errored. Restrict on delete, so pruning the cache never erases history.
+
+`users.onboarded_at` is set when a user finishes or skips onboarding (F5); null means they haven't been shown it yet. Favorites carry no quote FK — the dashboard fetches each saved symbol's latest price at render time.
