@@ -6,6 +6,7 @@ scratch/*
 node_modules/
 src/generated/
 /claude-context
+CLAUDE.local.md
 
 # Next.js
 .next/
