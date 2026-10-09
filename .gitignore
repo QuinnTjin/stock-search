@@ -5,3 +5,10 @@ scratch/*
 .neon
 node_modules/
 src/generated/
+/claude-context
+
+# Next.js
+.next/
+next-env.d.ts
+*.tsbuildinfo
+.vercel
