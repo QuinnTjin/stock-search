@@ -1,58 +1,30 @@
-"use client";
+import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { getCurrentUser } from "@/lib/current-user";
+import { Brand } from "@/components/brand";
+import SignupForm from "./signup-form";
 
-import Link from "next/link";
-import { useActionState } from "react";
-import { signup, type SignupState } from "./actions";
+export const metadata: Metadata = {
+  title: "Create account · Stock Search",
+};
 
-const initialState: SignupState = {};
-
-export default function SignupPage() {
-  const [state, formAction, isPending] = useActionState(signup, initialState);
-
-  if (state.success) {
-    return (
-      <>
-        <h1>Account created</h1>
-        <p>Account created — you can now log in.</p>
-        <p>
-          <Link href="/login">Log in</Link>
-        </p>
-      </>
-    );
+// Guardrail: an already-signed-in user cannot return to the signup page to create or
+// sign into another account — doing so would overwrite their session. Send them to lookup.
+export default async function SignupPage() {
+  if (await getCurrentUser()) {
+    redirect("/lookup");
   }
 
   return (
-    <>
-      <h1>Create an account</h1>
-      <form action={formAction}>
-        <div style={{ marginBottom: "1rem" }}>
-          <label htmlFor="email">Email</label>
-          <br />
-          <input id="email" name="email" type="email" required autoComplete="email" />
+    <div className="app">
+      <header className="site-header">
+        <div className="site-header__inner">
+          <Brand href="/" />
         </div>
-
-        <div style={{ marginBottom: "1rem" }}>
-          <label htmlFor="password">Password</label>
-          <br />
-          <input
-            id="password"
-            name="password"
-            type="password"
-            required
-            minLength={8}
-            autoComplete="new-password"
-          />
-        </div>
-
-        {state.error && <p style={{ color: "#ff6b6b" }}>{state.error}</p>}
-
-        <button type="submit" disabled={isPending}>
-          {isPending ? "Creating account…" : "Create account"}
-        </button>
-      </form>
-      <p>
-        Already have an account? <Link href="/login">Log in</Link>
-      </p>
-    </>
+      </header>
+      <main className="app__main auth">
+        <SignupForm />
+      </main>
+    </div>
   );
 }

@@ -1,0 +1,288 @@
+/* ==========================================================================
+   Stock Search — component styles
+   Requires tokens.css. Plain CSS, no framework. Class names are BEM-lite.
+   ========================================================================== */
+
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--color-ground);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+h1, h2, h3, p { margin: 0; }
+
+a { text-underline-offset: 3px; }
+
+:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ---------- Page shell ---------- */
+.app { min-height: 100vh; display: flex; flex-direction: column; background: var(--color-ground); }
+.app__main { flex: 1; }
+
+.site-header {
+  height: var(--header-height);
+  border-bottom: 1px solid var(--color-hairline);
+  display: flex;
+  align-items: center;
+  flex: none;
+}
+.site-header__inner {
+  width: 100%;
+  max-width: var(--container-site);
+  margin: 0 auto;
+  padding: 0 var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.site-header__actions { display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
+
+.brand {
+  display: flex; align-items: center; gap: 10px;
+  color: var(--color-text); text-decoration: none;
+  font-weight: 600; font-size: 17px; letter-spacing: -0.01em;
+}
+.brand__mark {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: var(--color-accent);
+  display: flex; align-items: center; justify-content: center;
+}
+.brand__mark svg { width: 16px; height: 16px; }
+
+.account {
+  font-size: 14px; line-height: 20px; color: var(--color-muted);
+  max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+@media (max-width: 520px) { .account { display: none; } }
+
+/* ---------- Typography ---------- */
+.title { font-size: 28px; line-height: 34px; font-weight: 600; letter-spacing: -0.01em; }
+.subtitle { font-size: 14px; line-height: 20px; color: var(--color-muted); }
+.subtitle--lg { font-size: 16px; line-height: 24px; }
+
+/* Mono caps label for data in cards ("Opening price", "Applies to") */
+.data-label {
+  font-family: var(--font-mono);
+  font-size: 12px; line-height: 16px; font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--color-muted);
+}
+.data-label--accent { color: var(--color-accent); }
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  height: 48px; padding: 0 22px;
+  border: 1px solid transparent; border-radius: var(--radius-control);
+  font: 600 16px/1 var(--font-sans);
+  text-decoration: none; cursor: pointer;
+  transition: background var(--motion-fast), border-color var(--motion-fast), color var(--motion-fast);
+}
+.btn:active { transform: translateY(1px); }
+.btn:disabled, .btn[aria-disabled="true"] { opacity: 0.6; cursor: not-allowed; }
+
+.btn--primary { background: var(--color-accent); color: var(--color-on-accent); }
+.btn--primary:hover:not(:disabled) { background: var(--color-accent-hover); }
+
+.btn--secondary { background: transparent; color: var(--color-text); border-color: var(--color-control); }
+.btn--secondary:hover:not(:disabled) { border-color: var(--color-text); }
+
+.btn--ghost { background: transparent; color: var(--color-muted); }
+.btn--ghost:hover:not(:disabled) { background: var(--color-raised); color: var(--color-text); }
+
+.btn--block { width: 100%; }
+.btn--header { height: 44px; }                  /* header Log in / Log out */
+.btn--search { flex: none; min-width: 132px; }  /* "Look up" beside the ticker field */
+
+/* Loading: keep width, swap label to "Looking up…", set aria-busy="true" + disabled */
+.spinner {
+  width: 18px; height: 18px; flex: none;
+  animation: spin var(--motion-spin);
+}
+
+/* ---------- Links ---------- */
+.link { color: var(--color-accent); }
+.link:hover { color: var(--color-accent-hover); }
+
+/* ---------- Forms ---------- */
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field__label { font-size: 14px; line-height: 20px; font-weight: 500; }
+.field__help { font-size: 13px; line-height: 18px; color: var(--color-muted); }
+.field__error {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 14px; line-height: 20px; color: var(--color-error);
+}
+.field__error svg { width: 16px; height: 16px; flex: none; }
+
+.input {
+  width: 100%; height: 48px; padding: 0 14px;
+  background: var(--color-surface); color: var(--color-text);
+  border: 1px solid var(--color-control); border-radius: var(--radius-control);
+  font: 400 16px var(--font-sans);   /* 16px stops iOS zoom on focus */
+}
+.input::placeholder { color: var(--color-placeholder); }
+.input:hover { border-color: var(--color-muted); }
+.input:focus { border-color: var(--color-accent); }
+.input:disabled { opacity: 0.55; cursor: not-allowed; }
+.input[aria-invalid="true"],
+.input[aria-invalid="true"]:hover,
+.input[aria-invalid="true"]:focus { border-color: var(--color-error); }
+
+/* Ticker field: mono, uppercase. Add autocapitalize="characters" spellcheck="false" in markup. */
+.input--ticker {
+  font-family: var(--font-mono); font-size: 18px;
+  letter-spacing: 0.04em; text-transform: uppercase;
+}
+
+/* Password field with Show/Hide toggle inside it */
+.password { position: relative; }
+.password .input { padding-right: 76px; }
+.password__toggle {
+  position: absolute; top: 4px; right: 4px;
+  height: 40px; padding: 0 12px; font-size: 14px; font-weight: 500;
+}
+
+/* ---------- Messages ---------- */
+.message {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 14px 16px; border-radius: var(--radius-message);
+  font-size: 14px; line-height: 20px;
+}
+.message svg { width: 18px; height: 18px; flex: none; margin-top: 1px; }
+.message--error { background: var(--color-error-tint); border: 1px solid var(--color-error-border); }
+.message--error svg { color: var(--color-error); }
+.message--notice { background: var(--color-notice-tint); border: 1px solid var(--color-notice-border); }
+.message--notice svg { color: var(--color-notice); }
+
+/* ---------- Cards ---------- */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-card);
+}
+
+/* Log in / Create account */
+.auth {
+  display: flex; justify-content: center; align-items: flex-start;
+  padding: 96px var(--space-5);
+}
+.auth-card {
+  width: 100%; max-width: var(--container-auth);
+  padding: var(--space-6);
+  display: flex; flex-direction: column; gap: var(--space-5);
+}
+.auth-card__head { display: flex; flex-direction: column; gap: 6px; }
+.auth-card__fields { display: flex; flex-direction: column; gap: 20px; }
+.auth-card__foot {
+  padding-top: 20px; border-top: 1px solid var(--color-hairline);
+  font-size: 14px; line-height: 20px; color: var(--color-muted); text-align: center;
+}
+
+/* ---------- Landing ---------- */
+.hero {
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  padding: 96px var(--space-5);
+}
+.hero__inner {
+  width: 100%; max-width: var(--container-lookup);
+  display: flex; flex-direction: column; align-items: center; gap: 20px;
+}
+.hero__title {
+  font-size: clamp(32px, 5vw, 44px); line-height: 1.09; font-weight: 600;
+  letter-spacing: -0.025em; text-wrap: balance;
+}
+.hero__lead {
+  max-width: 480px; font-size: 18px; line-height: 28px;
+  color: var(--color-muted); text-wrap: balance;
+}
+.hero__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-4); margin-top: var(--space-3); }
+
+/* Decorative preview of the result card (aria-hidden, no invented numbers) */
+.preview-card {
+  width: 100%; max-width: 440px; margin-top: 72px; text-align: left;
+  padding: 28px var(--space-6);
+  background: var(--color-surface);
+  border: 1px dashed var(--color-control); border-radius: var(--radius-card);
+  display: flex; flex-direction: column; gap: 22px;
+}
+.preview-card__group { display: flex; flex-direction: column; gap: 10px; }
+.preview-card__bar { display: block; background: var(--color-raised); border-radius: 6px; }
+.preview-card__bar--ticker { width: 84px; height: 24px; }
+.preview-card__bar--price { width: 220px; height: 52px; border-radius: 8px; }
+.preview-card__bar--date { width: 128px; height: 16px; border-radius: 5px; }
+.preview-card__row {
+  padding-top: var(--space-4); border-top: 1px solid var(--color-hairline);
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
+}
+
+/* ---------- Lookup ---------- */
+.lookup {
+  width: 100%; max-width: var(--container-lookup);
+  margin: 0 auto; padding: 56px var(--space-5) var(--space-9);
+  display: flex; flex-direction: column; gap: 28px;
+}
+.lookup__head { display: flex; flex-direction: column; gap: 6px; }
+.search { display: flex; flex-direction: column; gap: 6px; }
+.search__row { display: flex; gap: var(--space-3); }
+.search__row .input { flex: 1; min-width: 0; }
+.lookup__result { display: flex; flex-direction: column; gap: var(--space-4); }  /* put aria-live="polite" here */
+
+.result-card {
+  padding: var(--space-6);
+  display: flex; flex-direction: column; gap: var(--space-5);
+  animation: enter var(--motion-enter);
+}
+.result-card__ticker { font-family: var(--font-mono); font-size: 24px; line-height: 32px; font-weight: 500; letter-spacing: 0.04em; }
+.result-card__group { display: flex; flex-direction: column; gap: var(--space-2); }
+.result-card__price {
+  font-family: var(--font-mono); font-size: clamp(44px, 8vw, 56px); line-height: 1;
+  font-weight: 500; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;
+}
+.result-card__row {
+  padding-top: var(--space-4); border-top: 1px solid var(--color-hairline);
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--space-3);
+}
+.result-card__date { font-family: var(--font-mono); font-size: 15px; }
+.result-card__source { font-size: 13px; line-height: 18px; color: var(--color-muted); }
+
+/* Neutral status card, e.g. "No price found for “XYZQ”" */
+.status-card { padding: var(--space-6); display: flex; flex-direction: column; gap: 6px; animation: enter var(--motion-enter); }
+.status-card__title { font-size: 20px; line-height: 28px; font-weight: 600; }
+.status-card__text { font-size: 15px; line-height: 22px; color: var(--color-muted); }
+
+/* Error + retry block (429, timeout) */
+.retry { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-4); }
+.retry .message { align-self: stretch; }
+
+/* Loading skeleton: same box and row heights as .result-card so nothing shifts */
+.skeleton { background: var(--color-raised); border-radius: 6px; animation: pulse var(--motion-pulse); }
+.skeleton-card {
+  padding: var(--space-6);
+  display: flex; flex-direction: column; gap: var(--space-5);
+}
+.skeleton-card__row { padding-top: var(--space-4); border-top: 1px solid var(--color-hairline); display: flex; justify-content: space-between; gap: var(--space-3); }
+
+/* ---------- Motion ---------- */
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse { 50% { opacity: 0.45; } }
+@keyframes enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn { transition: none; }
+  .spinner, .skeleton, .result-card, .status-card { animation: none; }
+  html { scroll-behavior: auto; }
+}

@@ -1,0 +1,75 @@
+/* ==========================================================================
+   Stock Search — design tokens (light theme)
+   Source of truth: the "Spec v2 · Light" artboard on the design canvas.
+   Load this file first, then components.css.
+   Fonts (add to <head>, do not @import):
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --color-ground: #FAFAF8;      /* page background */
+  --color-surface: #FFFFFF;     /* cards, inputs */
+  --color-raised: #F0F1EE;      /* hover fills, skeletons, preview bars */
+  --color-hairline: #E3E5E1;    /* dividers, card borders (decorative only) */
+  --color-control: #80877F;     /* input + outline-button borders (3.7:1 on surface) */
+
+  /* Text */
+  --color-text: #14181F;        /* 17.8:1 on surface */
+  --color-muted: #4D5662;       /* 7.4:1 on surface */
+  --color-placeholder: #6B7480; /* 4.7:1 on surface */
+
+  /* Accent (primary action, focus ring, links, wordmark) */
+  --color-accent: #0B7A4B;        /* 5.4:1 on surface */
+  --color-accent-hover: #086139;  /* 7.6:1 with white text */
+  --color-on-accent: #FFFFFF;     /* text on accent fills, 5.4:1 */
+
+  /* Status. Always pair with an icon and text, never colour alone. */
+  --color-error: #B3261E;         /* 6.5:1 on surface */
+  --color-error-tint: rgba(179, 38, 30, 0.06);
+  --color-error-border: rgba(179, 38, 30, 0.4);
+  --color-notice: #8A5A00;        /* 5.9:1 on surface */
+  --color-notice-tint: rgba(138, 90, 0, 0.07);
+  --color-notice-border: rgba(138, 90, 0, 0.4);
+
+  /* Type */
+  --font-sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Spacing (4px base). Use only these. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+
+  /* Shape */
+  --radius-control: 10px;   /* buttons, inputs, messages use 12px (--radius-message) */
+  --radius-message: 12px;
+  --radius-card: 16px;
+  --radius-pill: 999px;
+
+  /* Layout */
+  --container-site: 1120px;   /* header inner width */
+  --container-lookup: 640px;  /* lookup column, landing hero */
+  --container-auth: 400px;    /* log in / create account card */
+  --header-height: 64px;
+
+  /* Motion */
+  --motion-fast: 120ms ease-out;   /* hover, colour changes */
+  --motion-enter: 240ms ease-out;  /* result card entry */
+  --motion-spin: 0.8s linear infinite;
+  --motion-pulse: 1.4s ease-in-out infinite;
+
+  /* Focus ring: 2px accent, 2px offset, on every interactive element */
+  --focus-ring: 2px solid var(--color-accent);
+  --focus-offset: 2px;
+}

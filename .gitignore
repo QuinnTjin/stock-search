@@ -8,8 +8,12 @@ src/generated/
 /claude-context
 CLAUDE.local.md
 
+/screenshots/
+/design
+
 # Next.js
 .next/
 next-env.d.ts
 *.tsbuildinfo
 .vercel
+AGENTS.md
