@@ -268,6 +268,20 @@ a { text-underline-offset: 3px; }
   font-family: var(--font-mono); font-size: clamp(44px, 8vw, 56px); line-height: 1;
   font-weight: 500; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;
 }
+/* U8: current / high / low / previous close beneath the opening price. */
+.result-card__stats {
+  margin: 0;
+  padding-top: var(--space-4); border-top: 1px solid var(--color-hairline);
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4);
+}
+.result-card__stat { display: flex; flex-direction: column; gap: 4px; }
+.result-card__stat-value {
+  font-family: var(--font-mono); font-size: 18px; line-height: 24px;
+  font-weight: 500; font-variant-numeric: tabular-nums;
+}
+@media (min-width: 560px) {
+  .result-card__stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
 .result-card__row {
   padding-top: var(--space-4); border-top: 1px solid var(--color-hairline);
   display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--space-3);

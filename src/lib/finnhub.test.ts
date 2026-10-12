@@ -27,7 +27,15 @@ describe("fetchQuote", () => {
 
     const result = await fetchQuote("AAPL");
 
-    expect(result).toEqual({ status: "FOUND", open: 150.25, quotedAt: new Date(1700000000 * 1000) });
+    expect(result).toEqual({
+      status: "FOUND",
+      open: 150.25,
+      current: 151,
+      high: 152,
+      low: 149,
+      previousClose: 148,
+      quotedAt: new Date(1700000000 * 1000),
+    });
   });
 
   it("returns NOT_FOUND when open is zero (unknown symbol)", async () => {

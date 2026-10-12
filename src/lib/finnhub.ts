@@ -2,7 +2,15 @@ const FINNHUB_QUOTE_URL = "https://finnhub.io/api/v1/quote";
 const REQUEST_TIMEOUT_MS = 5000;
 
 export type FinnhubResult =
-  | { status: "FOUND"; open: number; quotedAt: Date }
+  | {
+      status: "FOUND";
+      open: number;
+      current: number;
+      high: number;
+      low: number;
+      previousClose: number;
+      quotedAt: Date;
+    }
   | { status: "NOT_FOUND" }
   | { status: "ERROR"; code: "RATE_LIMITED" | "TIMEOUT" | "CONFIG" | "UPSTREAM" };
 
@@ -49,5 +57,13 @@ export async function fetchQuote(symbol: string): Promise<FinnhubResult> {
     return { status: "NOT_FOUND" };
   }
 
-  return { status: "FOUND", open: data.o, quotedAt: new Date(data.t * 1000) };
+  return {
+    status: "FOUND",
+    open: data.o,
+    current: data.c,
+    high: data.h,
+    low: data.l,
+    previousClose: data.pc,
+    quotedAt: new Date(data.t * 1000),
+  };
 }

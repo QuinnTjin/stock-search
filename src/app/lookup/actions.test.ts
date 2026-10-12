@@ -46,10 +46,14 @@ describe("lookupQuote", () => {
     expect(fetchQuoteMock).toHaveBeenCalledWith("BRK.B");
   });
 
-  it("maps FOUND to a found state with symbol, open price, and a formatted date", async () => {
+  it("maps FOUND to a found state with symbol, prices, and a formatted date", async () => {
     fetchQuoteMock.mockResolvedValue({
       status: "FOUND",
       open: 150.25,
+      current: 151,
+      high: 152,
+      low: 149,
+      previousClose: 148,
       quotedAt: new Date("2026-10-08T14:30:00.000Z"),
     });
 
@@ -59,6 +63,10 @@ describe("lookupQuote", () => {
       status: "found",
       symbol: "AAPL",
       open: 150.25,
+      current: 151,
+      high: 152,
+      low: 149,
+      previousClose: 148,
       asOf: new Date("2026-10-08T14:30:00.000Z").toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
@@ -69,7 +77,15 @@ describe("lookupQuote", () => {
 
   it("writes a FOUND history row with a nested quote and servedFromCache false", async () => {
     const quotedAt = new Date("2026-10-08T14:30:00.000Z");
-    fetchQuoteMock.mockResolvedValue({ status: "FOUND", open: 150.25, quotedAt });
+    fetchQuoteMock.mockResolvedValue({
+      status: "FOUND",
+      open: 150.25,
+      current: 151,
+      high: 152,
+      low: 149,
+      previousClose: 148,
+      quotedAt,
+    });
 
     await lookupQuote(INITIAL_STATE, formDataWithSymbol("aapl"));
 
@@ -79,7 +95,16 @@ describe("lookupQuote", () => {
         symbol: "AAPL",
         servedFromCache: false,
         quote: {
-          create: { symbol: "AAPL", status: "FOUND", openPrice: 150.25, quotedAt },
+          create: {
+            symbol: "AAPL",
+            status: "FOUND",
+            openPrice: 150.25,
+            currentPrice: 151,
+            highPrice: 152,
+            lowPrice: 149,
+            previousClose: 148,
+            quotedAt,
+          },
         },
       },
     });
@@ -182,6 +207,10 @@ describe("lookupQuote", () => {
     fetchQuoteMock.mockResolvedValue({
       status: "FOUND",
       open: 150.25,
+      current: 151,
+      high: 152,
+      low: 149,
+      previousClose: 148,
       quotedAt: new Date("2026-10-08T14:30:00.000Z"),
     });
     stockLookupCreateMock.mockRejectedValue(new Error("db unavailable"));

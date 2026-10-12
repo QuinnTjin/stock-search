@@ -8,7 +8,16 @@ import { normalizeSymbol, isValidSymbol } from "@/lib/symbol";
 
 export type LookupState =
   | { status: "idle" }
-  | { status: "found"; symbol: string; open: number; asOf: string }
+  | {
+      status: "found";
+      symbol: string;
+      open: number;
+      current: number;
+      high: number;
+      low: number;
+      previousClose: number;
+      asOf: string;
+    }
   | { status: "error"; message: string };
 
 const INVALID_SYMBOL_MESSAGE = "Enter a valid symbol like AAPL or BRK.B.";
@@ -34,7 +43,18 @@ export async function lookupQuote(_prev: LookupState, formData: FormData): Promi
           user: { connect: { id: user.id } },
           symbol,
           servedFromCache: false,
-          quote: { create: { symbol, status: QuoteStatus.FOUND, openPrice: result.open, quotedAt: result.quotedAt } },
+          quote: {
+            create: {
+              symbol,
+              status: QuoteStatus.FOUND,
+              openPrice: result.open,
+              currentPrice: result.current,
+              highPrice: result.high,
+              lowPrice: result.low,
+              previousClose: result.previousClose,
+              quotedAt: result.quotedAt,
+            },
+          },
         },
       });
     } else if (result.status === "NOT_FOUND") {
@@ -61,6 +81,10 @@ export async function lookupQuote(_prev: LookupState, formData: FormData): Promi
         status: "found",
         symbol,
         open: result.open,
+        current: result.current,
+        high: result.high,
+        low: result.low,
+        previousClose: result.previousClose,
         asOf: result.quotedAt.toLocaleDateString("en-US", {
           year: "numeric",
           month: "long",

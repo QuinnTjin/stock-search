@@ -6,6 +6,7 @@ import { useActionState } from "react";
 import { lookupQuote, type LookupState } from "./actions";
 import { normalizeSymbol, isValidSymbol } from "@/lib/symbol";
 import { ErrorIcon, Spinner } from "@/components/icons";
+import { QuoteStats } from "@/components/quote-stats";
 
 const initialState: LookupState = { status: "idle" };
 const SYMBOL_HELP = "Enter a symbol like AAPL or BRK.B.";
@@ -82,6 +83,14 @@ export default function LookupForm({ initialSymbol }: LookupFormProps) {
               <div className="skeleton" style={{ width: 104, height: 16 }} />
               <div className="skeleton" style={{ width: 240, height: 56 }} />
             </div>
+            <div className="result-card__stats">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div className="result-card__stat" key={i}>
+                  <div className="skeleton" style={{ width: 70, height: 14 }} />
+                  <div className="skeleton" style={{ width: 88, height: 22 }} />
+                </div>
+              ))}
+            </div>
             <div className="skeleton-card__row">
               <div className="skeleton" style={{ width: 90, height: 20 }} />
               <div className="skeleton" style={{ width: 140, height: 20 }} />
@@ -95,6 +104,12 @@ export default function LookupForm({ initialSymbol }: LookupFormProps) {
               <span className="data-label">Opening price</span>
               <span className="result-card__price">{formatPrice.format(state.open)}</span>
             </div>
+            <QuoteStats
+              current={state.current}
+              high={state.high}
+              low={state.low}
+              previousClose={state.previousClose}
+            />
             <div className="result-card__row">
               <span className="data-label">Applies to</span>
               <span className="result-card__date">{state.asOf}</span>

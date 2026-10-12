@@ -7,6 +7,7 @@ import { ErrorIcon } from "@/components/icons";
 import { normalizeSymbol, isValidSymbol } from "@/lib/symbol";
 import { fetchQuote, type FinnhubResult } from "@/lib/finnhub";
 import { isFavorited } from "@/lib/favorites";
+import { QuoteStats } from "@/components/quote-stats";
 import SaveButton from "./save-button";
 
 type StockPageProps = {
@@ -92,6 +93,12 @@ export default async function StockPage({ params }: StockPageProps) {
                 <span className="data-label">Opening price</span>
                 <span className="result-card__price">{formatPrice.format(result!.open)}</span>
               </div>
+              <QuoteStats
+                current={result!.current}
+                high={result!.high}
+                low={result!.low}
+                previousClose={result!.previousClose}
+              />
               <div className="result-card__row">
                 <span className="data-label">Applies to</span>
                 <span className="result-card__date">{formatDate.format(result!.quotedAt)}</span>
